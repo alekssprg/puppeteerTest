@@ -3,8 +3,8 @@
 Запуск тестов выполняется через команду:
 npm test
 
-Набор библиотек, используемых в проекте
-https://medium.com/@tariqul.islam.rony/automated-ui-ux-testing-with-puppeteer-mocha-and-chai-800cfb028ab9
+Набор библиотек, используемых в проекте:
+
 1. Node JS (v.1.8.10)
 2. Puppeteer JS
 3. Mocha	- описание тестов
@@ -15,3 +15,6 @@ https://medium.com/@tariqul.islam.rony/automated-ui-ux-testing-with-puppeteer-mo
 8. Mochawesome (for Report generation )	- генератор отчетов для mocha
 9. chai-http - отправка запросов к web-сервисам.
 10. lodash - библиотека, используется для сохранения глобальных объектов
+
+Часть взята из примера:
+https://medium.com/@tariqul.islam.rony/automated-ui-ux-testing-with-puppeteer-mocha-and-chai-800cfb028ab9
