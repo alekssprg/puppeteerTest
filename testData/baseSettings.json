@@ -1,0 +1,10 @@
+{
+    "startUrl" : "localhost:60000",
+    "width": 1920,
+    "height": 1040,
+    "DOCTOR" : "#DOCTOR",
+    "EXPERT" : "#EXPERT",
+    "DRUGSTORE" : "#DRUGSTORE",
+    "ADMIN" : "#ADMIN",
+    "DIRECTOR" : "#DIRECTOR"
+}

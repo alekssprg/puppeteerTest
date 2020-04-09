@@ -5,7 +5,7 @@ npm test
 
 Набор библиотек, используемых в проекте:
 
-1. Node JS (v.1.8.10)
+1. Node JS
 2. Puppeteer JS
 3. Mocha	- описание тестов
 4. Chai ( Test Assertion Library )

@@ -13,7 +13,7 @@ const opts = {
     headless: false,
     slowMo: 100,
     timeout: 0,
-    args: ['--start-maximized', '--window-size=1920,1040'] 
+    args: ['--start-maximized'] //, '--window-size=1920,1040'
 }
 
 /* call the before for puppeteer for execute this code before start testing */

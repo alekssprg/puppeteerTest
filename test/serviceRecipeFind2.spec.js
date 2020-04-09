@@ -1,7 +1,5 @@
 var assert = require('chai').assert;
 const { expect } = require('chai');
-var should = require('chai').should();
-//var assert = require('chai').assert();
 var chai = require('chai')
   , chaiHttp = require('chai-http');
 
