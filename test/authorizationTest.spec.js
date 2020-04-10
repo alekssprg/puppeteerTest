@@ -6,7 +6,7 @@ describe('Should login work', async  () => {
     let page;
     const baseSettingsPath = '../testData/baseSettings.json'
     before(async () => { /* before hook for mocha testing */
-        page = await createPageAndGotoBaseUrl(baseSettingsPath, page);
+        page = await createPageAndGotoBaseUrl();
     });
 
     after(async function () { /* after hook for mocah testing */

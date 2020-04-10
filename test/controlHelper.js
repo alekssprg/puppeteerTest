@@ -3,7 +3,7 @@ const journalDataAll = require(journalDataPath);
 const documentDataPath = '../testData/documentDataSettings.json'
 const documentDataAll = require(documentDataPath);
 
-//Создание страницы и переход в базовому Url
+//Открытие журнала документов
 module.exports.openDocumentList = async function(page, armCode, journalCode) {
     const journalData = getJournalDataByCode(armCode, journalCode);
     await page.evaluate((data) => {
@@ -13,6 +13,7 @@ module.exports.openDocumentList = async function(page, armCode, journalCode) {
             title: data.Title,
             data: '' });
         }, journalData);
+    //await page.waitFor(500);//ожидание для полной отрисовки контролов
     const watchControlLoad = page.waitForFunction(journalData.WaitCondition);
     await watchControlLoad;
 };
@@ -25,6 +26,7 @@ function getDocumentDataByCode (armCode, documentCode) {
     return documentDataAll[armCode][documentCode];
 };
 
+//открытие формы редактирования документа
 module.exports.openDocument = async function(page, armCode, documentCode) {
     const documentData = getDocumentDataByCode(armCode, documentCode);
     await page.evaluate((data) => {

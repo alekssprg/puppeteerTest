@@ -1,7 +1,7 @@
 {
     "COMMENT": "Данный файл в дальнейшем нужно генерировать автоматически на основании данных в БД.",
     "DOCTOR": {
-        "PROGRAM" : { "Url" : "~\\PatientPresentation\\Program.ascx" , "Title": "Форма редактирования программ ЛЛО", "WaitCondition": "(window.App.direct.Program != null)",
+        "PROGRAM" : { "Url" : "~\\PatientPresentation\\Program.ascx" , "Title": "Форма редактирования программ ЛЛО", "WaitCondition": "(window.SpargoJs.Test.getLastControlId('Program') != null)",
             "Args": {
                 "isModal": false, 
                 "modalGuid": "",
@@ -9,7 +9,7 @@
                 "copy": false,
                 "gridId": null
             }},
-        "RECIPE" : { "Url" : "~\\RecipePresentation\\Recipe.ascx" , "Title": "Форма редактирования рецептов", "WaitCondition": "(window.App.direct.DoctorRecipe != null)",
+        "RECIPE" : { "Url" : "~\\RecipePresentation\\Recipe.ascx" , "Title": "Форма редактирования рецептов", "WaitCondition": "(window.SpargoJs.Test.getLastControlId('Recipe') != null)",
             "Args" : {
                 "isModal": false, 
                 "modalGuid": "",
