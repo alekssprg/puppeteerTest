@@ -3,7 +3,7 @@ const assert = require('chai').assert;
 const {signInAndOpenDoctorApp} = require('./loginPage.js');
 const {createPageAndGotoBaseUrl} = require('./startApp.js');
 const {openDocument, openDocumentList} = require('./controlHelper.js');
-const {selectGridPanelElement, getToolbarButton, waitByCondition, buttonClick, gridPanelDataExists, waitAjaxRequestComplete } = require('./baseListControl.js');
+const {selectGridPanelElement, getToolbarButton, waitByCondition, buttonClick, gridPanelDataExists, waitAjaxRequestComplete, controlToolbarId } = require('./baseListControl.js');
 //данные
 const baseSettings = require('../testData/baseSettings.json');
 //константы
@@ -26,7 +26,7 @@ describe('doctorRecipeList work', async  () => {
     });
 
     afterEach(async function () { /* after hook for mocah testing */
-        await page.waitFor(1000);
+        await page.waitFor(1000);    //для визуальной проверки
         await page.close();
     });
 
@@ -34,16 +34,16 @@ describe('doctorRecipeList work', async  () => {
         await openDocumentList(page, DOCTOR_ARM_CODE, JOURNAL_CODE);
         await openDocument(page, DOCTOR_ARM_CODE, DOCUMENT_CODE);
     });
-
+    
     it('should open recipe list and click Refresh', async () => {
         await openDocumentList(page, DOCTOR_ARM_CODE, JOURNAL_CODE);
-        var clearFilterButton = await getToolbarButton(page, CONTROL_TYPE, CLEAN_FILTER_BUTTON_ID);
+        let clearFilterButton = await getToolbarButton(page, CONTROL_TYPE, CLEAN_FILTER_BUTTON_ID);
         await buttonClick(clearFilterButton);
         await Promise.all([
             await gridPanelDataExists(page, CONTROL_TYPE, GRID_PANEL_ID)//,
             //await waitAjaxRequestComplete(page)
         ]);
-        var button = await getToolbarButton(page, CONTROL_TYPE, "Refresh", TOOLBAR_ID);
+        let button = await getToolbarButton(page, CONTROL_TYPE, controlToolbarId("Refresh", TOOLBAR_ID));
         await buttonClick(button);
         await Promise.all([
             await gridPanelDataExists(page, CONTROL_TYPE, GRID_PANEL_ID)//,
@@ -53,35 +53,35 @@ describe('doctorRecipeList work', async  () => {
 
     it('should open recipe list and click Add new Item', async () => {
         await openDocumentList(page, DOCTOR_ARM_CODE, JOURNAL_CODE);
-        var button = await getToolbarButton(page, CONTROL_TYPE, "Add", TOOLBAR_ID);
+        let button = await getToolbarButton(page, CONTROL_TYPE, controlToolbarId("Add", TOOLBAR_ID));
         await buttonClick(button);
         await waitByCondition(page, WAIT_EDIT_FORM_CONDITION);
     });
 
     it('should open recipe list and click Edit on second Item', async () => {
         await openDocumentList(page, DOCTOR_ARM_CODE, JOURNAL_CODE);
-        var clearFilterButton = await getToolbarButton(page, CONTROL_TYPE, CLEAN_FILTER_BUTTON_ID);
+        let clearFilterButton = await getToolbarButton(page, CONTROL_TYPE, CLEAN_FILTER_BUTTON_ID);
         await buttonClick(clearFilterButton);
         await Promise.all([
             await gridPanelDataExists(page, CONTROL_TYPE, GRID_PANEL_ID)//,
             //await waitAjaxRequestComplete(page)
         ]);
         await selectGridPanelElement (page, CONTROL_TYPE, GRID_PANEL_ID, 1);
-        var button = await getToolbarButton(page, CONTROL_TYPE, "Edit", TOOLBAR_ID);
+        let button = await getToolbarButton(page, CONTROL_TYPE, controlToolbarId("Edit", TOOLBAR_ID));
         await buttonClick(button);
         await waitByCondition(page, WAIT_EDIT_FORM_CONDITION);
     });
 
     it('should open recipe list and click Copy first Item', async () => {
         await openDocumentList(page, DOCTOR_ARM_CODE, JOURNAL_CODE);
-        var clearFilterButton = await getToolbarButton(page, CONTROL_TYPE, CLEAN_FILTER_BUTTON_ID);
+        let clearFilterButton = await getToolbarButton(page, CONTROL_TYPE, CLEAN_FILTER_BUTTON_ID);
         await buttonClick(clearFilterButton);
         await Promise.all([
             await gridPanelDataExists(page, CONTROL_TYPE, GRID_PANEL_ID)//,
             //await waitAjaxRequestComplete(page)
         ]);
         await selectGridPanelElement (page, CONTROL_TYPE, GRID_PANEL_ID, 2);
-        var button = await getToolbarButton(page, CONTROL_TYPE, "Copy", TOOLBAR_ID);
+        let button = await getToolbarButton(page, CONTROL_TYPE, controlToolbarId("Copy", TOOLBAR_ID));
         await buttonClick(button);
         await waitByCondition(page, WAIT_EDIT_FORM_CONDITION);
     });

@@ -10,7 +10,7 @@ async function waitAjaxRequestComplete(page) {
     assert(finalResponse.ok(),"AJAX запрос вернулся с ошибкой.");
 };
 
-//Открытие журнала документов
+//выбор элемента указанного грида по индексу и ожидание его выбора
 async function selectGridPanelElement (page, controlType, gridPanelId, rowNumber) {
     await gridPanelDataExists(page, controlType, gridPanelId);
     await page.evaluate((controlType,gridPanelId, rowNumber) => {
@@ -18,17 +18,22 @@ async function selectGridPanelElement (page, controlType, gridPanelId, rowNumber
             window.SpargoJs.Test.selectGridPanelElement(controlType, gridPanelId, rowNumber);
         }
     }, controlType, gridPanelId, rowNumber);
-    const watchControlLoad = page.waitForFunction('window.SpargoJs.Test.selectGridPanelElementComplete("' + controlType + '","' + gridPanelId + '",' + rowNumber +')');
+    const watchControlLoad = page.waitForFunction('window.SpargoJs.Test.selectGridPanelElementComplete("' + controlType + '","' + gridPanelId + '",' + rowNumber + ')');
     await watchControlLoad;
 };
 
 //ищем кнопку тулбара или формы
 async function getToolbarButton (page, controlType, buttonId, toolbarId) {
-    var button = await page.evaluateHandle((controlType, buttonId, toolbarId) => {
+    let button = await page.evaluateHandle((controlType, buttonId, toolbarId) => {
         debugger;
         return window.SpargoJs.Test.getButtonDom(controlType, buttonId, toolbarId);
     }, controlType, buttonId, toolbarId);
     return button.asElement();
+};
+
+//ожидаем закрытия окна формы редактирования
+async function waitWindowClose(page, controlType, windowId) {
+    await page.waitForFunction("(window.SpargoJs.Test.checkWindowClose('" + controlType + "','" + windowId + "') == true)");
 };
 
 //нажатие кнопки
@@ -42,9 +47,16 @@ async function waitByCondition(page, condition){
     await watchControlLoad;
 };
 
+function controlToolbarId(controlId, toolbarId) {
+    if ((toolbarId) && (toolbarId != '')) controlId = toolbarId + controlId;
+    return controlId;
+}
+
 module.exports.gridPanelDataExists = gridPanelDataExists
 module.exports.selectGridPanelElement = selectGridPanelElement
 module.exports.getToolbarButton = getToolbarButton
 module.exports.buttonClick = buttonClick
 module.exports.waitByCondition = waitByCondition
 module.exports.waitAjaxRequestComplete = waitAjaxRequestComplete
+module.exports.controlToolbarId = controlToolbarId
+module.exports.waitWindowClose = waitWindowClose

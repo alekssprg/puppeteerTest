@@ -1,6 +1,6 @@
-var assert = require('chai').assert;
+const assert = require('chai').assert;
 const { expect } = require('chai');
-var chai = require('chai')
+const chai = require('chai')
   , chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);

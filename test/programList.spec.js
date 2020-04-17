@@ -35,18 +35,17 @@ describe('programList work', async  () => {
 
     it('should open program list and click Refresh', async () => {
         await openDocumentList(page, DOCTOR_ARM_CODE, JOURNAL_CODE);
-        var button = await getToolbarButton(page, CONTROL_TYPE, "Refresh");
+        let button = await getToolbarButton(page, CONTROL_TYPE, "Refresh");
         await buttonClick(button);
-        var result = true;
         await Promise.all([
             await gridPanelDataExists(page, CONTROL_TYPE, GRID_PANEL_ID),
-            await waitAjaxRequestComplete(page)
+            await waitAjaxRequestComplete(page) //может не срабатывать
         ]);
     });
 
     it('should open program list and click Add new Item', async () => {
         await openDocumentList(page, DOCTOR_ARM_CODE, JOURNAL_CODE);
-        var button = await getToolbarButton(page, CONTROL_TYPE, "Add");
+        let button = await getToolbarButton(page, CONTROL_TYPE, "Add");
         await buttonClick(button);
         await waitByCondition(page, WAIT_EDIT_FORM_CONDITION);
     });
@@ -54,7 +53,7 @@ describe('programList work', async  () => {
     it('should open program list and click Edit on second Item', async () => {
         await openDocumentList(page, DOCTOR_ARM_CODE, JOURNAL_CODE);
         await selectGridPanelElement (page, CONTROL_TYPE, GRID_PANEL_ID, 1);
-        var button = await getToolbarButton(page, CONTROL_TYPE, "Edit");
+        let button = await getToolbarButton(page, CONTROL_TYPE, "Edit");
         await buttonClick(button);
         await waitByCondition(page, WAIT_EDIT_FORM_CONDITION);
     });
@@ -62,7 +61,7 @@ describe('programList work', async  () => {
     it('should open program list and click Copy first Item', async () => {
         await openDocumentList(page, DOCTOR_ARM_CODE, JOURNAL_CODE);
         await selectGridPanelElement (page, CONTROL_TYPE, GRID_PANEL_ID, 0);
-        var button = await getToolbarButton(page, CONTROL_TYPE, "Copy");
+        let button = await getToolbarButton(page, CONTROL_TYPE, "Copy");
         await buttonClick(button);
         await waitByCondition(page, WAIT_EDIT_FORM_CONDITION);
     });
