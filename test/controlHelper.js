@@ -1,11 +1,29 @@
 const journalDataPath = '../testData/journalDataSettings.json'
+/**
+ * Мета данные по журналам
+ */
 const journalDataAll = require(journalDataPath);
 const documentDataPath = '../testData/documentDataSettings.json'
+/**
+ * Мета данные по документам
+ */
 const documentDataAll = require(documentDataPath);
+/**
+ * Путь к скриптам тестов
+ */
 const WINDOW_SPARGO_JS_TEST = "window.SpargoJs.Test.";
+/**
+ * ID окна, создаваемого методом ExtAjaxHelper.LoadUserControlModalExt
+ */
 const EDIT_FORM_WINDOW_EXT_ID = 'WindowExt0';
 
 //Открытие журнала документов
+/**
+ * Открытие журнала документов
+ * @param {object} page страница браузера
+ * @param {string} armCode код АРМ-а
+ * @param {string} journalCode код журнала
+ */
 async function openDocumentList (page, armCode, journalCode) {
     const journalData = getJournalDataByCode(armCode, journalCode);
     await page.evaluate((data) => {
@@ -17,20 +35,36 @@ async function openDocumentList (page, armCode, journalCode) {
     //await page.waitFor(500);//ожидание для полной отрисовки контролов
     await page.waitForFunction(createWaitConditionByControlType(journalData.ControlType));
 };
-
+/**
+ * Получение мета данных (настроек) журнала
+ * @param {string} armCode код АРМ-а
+ * @param {string} journalCode код журнала
+ */
 function getJournalDataByCode (armCode, journalCode) {
     return journalDataAll[armCode][journalCode];
 };
-
+/**
+ * Получение мета данных (настроек) документа
+ * @param {string} armCode код АРМ-а
+ * @param {string} documentCode код документа
+ */
 function getDocumentDataByCode (armCode, documentCode) {
     return documentDataAll[armCode][documentCode];
 };
-
+/**
+ * Формирование функции для ожидания загрузки контрола
+ * @param {string} waitControlType 
+ */
 function createWaitConditionByControlType(waitControlType){
     return WINDOW_SPARGO_JS_TEST + "getLastControlId('" + waitControlType + "') != null";
 };
 
-//открытие формы редактирования документа
+/**
+ * Открытие формы редактирования документа
+ * @param {object} page страница браузера
+ * @param {string} armCode код АРМ-а
+ * @param {string} documentCode код документа
+ */
 async function openDocument(page, armCode, documentCode) {
     const documentData = getDocumentDataByCode(armCode, documentCode);
     await page.evaluate((data, windowId) => {

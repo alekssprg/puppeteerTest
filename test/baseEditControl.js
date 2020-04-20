@@ -1,11 +1,29 @@
 'use strict'
 const { selectGridPanelElement, waitByControlTypeLoad, waitWindowClose } = require('./baseListControl.js');
+const { WINDOW_SPARGO_JS_TEST } = require('./controlHelper.js');
+/**
+ * @enum {string} типы полей
+ */
 const FIELD_TYPE = { TEXT : "text", SELECT : "select", DATE : "date", BOOLEAN : "boolean",
 NUMBER : "number", EXTENDSSTATUSCOMBOBOX: "extendsstatuscombobox" };
-const { WINDOW_SPARGO_JS_TEST } = require('./controlHelper.js');
+/**
+ * @enum {string} коды кнопок
+ */
 const MB_BUTTON_CODE = {OK: "ok", YES: "yes", NO: "no", CANCEL: "cancel"};
-
+/**
+ * Класс для описания полей формы
+ */
 class FormField {
+    /**
+     * Конструктор класса
+     * @param {string} name имя или метка поля
+     * @param {string} value значение, которое нужно задать
+     * @param {FIELD_TYPE} type тип контрола
+     * @param {string} selectControlType тип контрола для загрузки, если это поле с выбором
+     * @param {string} selectGridPanelId ID грида с данными, из которого нужно выбирать
+     * @param {string} selectWindowId ID окна, которое будет открыто
+     * @param {string} doubleClickHandler обработчик двойного нажатия на строке грида
+     */
     constructor (name, value, type, selectControlType, selectGridPanelId, selectWindowId, doubleClickHandler){
        //поля будут публичные
        this.name = name;
@@ -17,13 +35,24 @@ class FormField {
        this.doubleClickHandler = doubleClickHandler;
     }
 }
-
-//ожидание заполнения поля формы не пустым значением
+/**
+ * Ожидаем заполнения поля валидным (не пустым) значением
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола
+ * @param {string} formId ID контрола формы
+ * @param {string} fieldName имя или метка поля
+ */
 async function checkFieldValueValid (page, controlType, formId, fieldName) {
     await page.waitForFunction(WINDOW_SPARGO_JS_TEST + 'formFieldValueValid("' + controlType + '","' + formId + '","' + fieldName + '")');
 };
 
-//заполнение полей формы редактирования
+/**
+ * Функция заполнения полей формы редактирования 
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} formId ID формы
+ * @param {FormField[]} fieldArray массив полей формы
+ */
 async function fillProgramEditForm(page, controlType, formId, fieldArray) {
     for(let i = 0; i < fieldArray.length; i++){
         let field = fieldArray[i];
@@ -40,7 +69,13 @@ async function fillProgramEditForm(page, controlType, formId, fieldArray) {
     }
 };
 
-//заполнение текстового поля
+/**
+ * Заполнение текстового поля
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} formId ID формы
+ * @param {FormField} field поле формы
+ */
 async function fillTextField(page, controlType, formId, field) {
     let fieldElement = await getElementByName(page, controlType, formId, field.name);
     await textFieldClearValueIfNotEmpty(page, controlType, formId, field.name);
@@ -48,7 +83,13 @@ async function fillTextField(page, controlType, formId, field) {
     await checkFieldValueValid(page, controlType, formId, field.name);
 };
 
-//функция получения элемента формы по ID формы и имени поля
+/**
+ * Функция получения элемента формы по ID формы и имени поля 
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} formId ID формы
+ * @param {string} fieldName имя поля
+ */
 async function getElementByName(page, controlType, formId, fieldName) {
     let field = await page.evaluateHandle((controlType, formId, fieldName) => {
         return window.SpargoJs.Test.getFormFieldDom(controlType, formId, fieldName);
@@ -56,14 +97,26 @@ async function getElementByName(page, controlType, formId, fieldName) {
     return field.asElement();
 };
 
-//функция очистки текстового поля, если оно не пустое
+/**
+ * Функция очистки текстового поля, если оно не пустое
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} formId ID формы
+ * @param {string} fieldName имя поля 
+ */
 async function textFieldClearValueIfNotEmpty(page, controlType, formId, fieldName) {
     await page.evaluateHandle((controlType, formId, fieldName) => {
         return window.SpargoJs.Test.formTextFieldClearValueIfNotEmpty(controlType, formId, fieldName);
     }, controlType, formId, fieldName);
 };
 
-//заполнение поля с триггером
+/**
+ * Заполнение поля с триггером
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} formId ID формы
+ * @param {FormField} field имя поля
+ */
 async function fillTriggerField(page, controlType, formId, field) {
     let triggerButtonClear = await getTriggerFieldButton(page, controlType, formId, field.name, 1);
     await triggerButtonClear.click();
@@ -76,7 +129,14 @@ async function fillTriggerField(page, controlType, formId, field) {
     await checkFieldValueValid(page, controlType, formId, field.name);
 };
 
-//функция получения кнопки TriggerField-а (по умолчанию юерем первую кнопку - открыть справочник)
+/**
+ * Функция получения кнопки TriggerField-а (по умолчанию юерем первую кнопку - открыть справочник) 
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} formId ID формы
+ * @param {string} triggerFieldName имя поля
+ * @param {int} buttonIndex индекс кнопки триггера (нумерация с 0)
+ */
 async function getTriggerFieldButton(page, controlType, formId, triggerFieldName, buttonIndex = 0) {
     let field = await page.evaluateHandle((controlType, formId, fieldName, buttonIndex) => {
         return window.SpargoJs.Test.getFormTriggerFieldButtonDom(controlType, formId, fieldName, buttonIndex);
@@ -84,7 +144,13 @@ async function getTriggerFieldButton(page, controlType, formId, triggerFieldName
     return field.asElement();
 };
 
-//вызов обработчика двойного щелчка у грида
+/**
+ * Вызов обработчика двойного щелчка у грида
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы с выбором элемента справочника
+ * @param {string} gridPanelId ID грида
+ * @param {string} doubleClickHandler обработчик двойного щелчка
+ */
 async function gridPanelDoubleClickCall (page, controlType, gridPanelId, doubleClickHandler) {
     await page.evaluate((controlType, gridPanelId, doubleClickHandler) => {
         var gridPanel = window.SpargoJs.Test.getGridPanel(controlType, gridPanelId);
@@ -93,7 +159,13 @@ async function gridPanelDoubleClickCall (page, controlType, gridPanelId, doubleC
     }, controlType, gridPanelId, doubleClickHandler);
 };
 
-//заполнение поля комбобокса
+/**
+ * Заполнение поля комбобокса
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} formId ID формы
+ * @param {FormField} field поле формы
+ */
 async function fillComboBoxField(page, controlType, formId, field) {
     await textFieldClearValueIfNotEmpty(page, controlType, formId, field.name);
     let fieldElement = await getElementByName(page, controlType, formId, field.name);
@@ -104,12 +176,24 @@ async function fillComboBoxField(page, controlType, formId, field) {
     await checkFieldValueValid(page, controlType, formId, field.name);
 };
 
-//ждем открытия списка для комбобокса
+/**
+ * Ждем открытия списка для комбобокса
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} formId ID формы
+ * @param {string} fieldName имя поля
+ */
 async function formComboBoxBoundListIsOpen (page, controlType, formId, fieldName) {
     await page.waitForFunction(WINDOW_SPARGO_JS_TEST + 'formComboBoxBoundListIsOpen("' + controlType + '","' + formId + '","' + fieldName + '")');
 };
 
-//функция получения элемента из выпадющего списка ComboBox-а
+/**
+ * Функция получения элемента из выпадающего списка ComboBox-а
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} formId ID формы
+ * @param {FormField} field поле формы
+ */
 async function getComboBoxBoundListItem(page, controlType, formId, field) {
     let listItem = await page.evaluateHandle((controlType, formId, fieldName, textValue) => {
         return window.SpargoJs.Test.getComboBoxBoundListItem(controlType, formId, fieldName, textValue);
@@ -117,7 +201,13 @@ async function getComboBoxBoundListItem(page, controlType, formId, field) {
     return listItem.asElement();
 };
 
-//заполнение поля флага
+/**
+ * Функция заполнение поля флага
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} formId ID формы
+ * @param {FormField} field поле формы
+ */
 async function fillBooleanField(page, controlType, formId, field) {
     let fieldElementValue = await getCheckBoxFieldValue(page, controlType, formId, field.name);
     if (field.value !== fieldElementValue) {
@@ -130,7 +220,13 @@ async function fillBooleanField(page, controlType, formId, field) {
     }
 };
 
-//функция получения значения checkbox-а
+/**
+ * Функция получения значения checkbox-а
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} formId ID формы
+ * @param {string} fieldName имя поля
+ */
 async function getCheckBoxFieldValue(page, controlType, formId, fieldName) {
     return await page.evaluate((controlType, formId, fieldName) => {
         return window.SpargoJs.Test.getCheckBoxValue(controlType, formId, fieldName);
@@ -141,6 +237,14 @@ async function getCheckBoxFieldValue(page, controlType, formId, fieldName) {
 //Ждет появления messageBox-а
 //Проверяем текст его сообщения
 //Нажимает указанную кнопку
+/**
+ * Функция ожидания появления MessageBox-а. Ждет появления messageBox-а. Проверяем текст его сообщения. Нажимает указанную кнопку.
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} windowId ID текущего открытого окна
+ * @param {string[]} waitMessageBoxText ожидаемые сообщения
+ * @param {MB_BUTTON_CODE} messageBoxButtonCode код кнопки для закрытия MessageBox-а
+ */
 async function waitMessageBoxWithText(page, controlType, windowId, waitMessageBoxText, messageBoxButtonCode = MESSAGEBOX_BUTTON_CODE.OK) {
     await waitMessageBoxActive(page, controlType, windowId);
     let messageBoxInnerText = await page.evaluate((controlType, windowId) => {
@@ -151,7 +255,13 @@ async function waitMessageBoxWithText(page, controlType, windowId, waitMessageBo
     await button.click();
 };
 
-//получение кнопки MessageBox-а
+/**
+ * Функция получение кнопки MessageBox-а
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} windowId ID текущего открытого окна
+ * @param {MB_BUTTON_CODE} messageBoxButtonCode код кнопки для закрытия MessageBox-а
+ */
 async function getMessageBoxButton(page, controlType, windowId, messageBoxButtonCode) {
     let button = await page.evaluateHandle((controlType, windowId, messageBoxButtonCode) => {
         return window.SpargoJs.Test.getMessageBoxButton(controlType, windowId, messageBoxButtonCode);
@@ -159,12 +269,22 @@ async function getMessageBoxButton(page, controlType, windowId, messageBoxButton
     return button.asElement();
 }
 
-//ожидаем появления MessageBox-а
+/**
+ * Функция ожидаем появления MessageBox-а
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} windowId ID текущего открытого окна
+ */
 async function waitMessageBoxActive(page, controlType, windowId){
     await page.waitForFunction(WINDOW_SPARGO_JS_TEST + "isActiveWindowIsMessageBox('" + controlType + "','" + windowId + "') == true");
 };
 
 //проверяем вхождение строк в сообщение MessageBox-а
+/**
+ * Функция проверки вхождения строк в сообщение MessageBox-а
+ * @param {string[]} waitMessageBoxText ожидаемые сообщения
+ * @param {string} messageBoxInnerText innertext MessageBox-а
+ */
 function checkMessgaeBoxInnerTextToIncludeNeedString(waitMessageBoxText, messageBoxInnerText) {
     let messageBoxInnerTextUC = messageBoxInnerText.toUpperCase();
     if (waitMessageBoxText instanceof String)

@@ -1,18 +1,32 @@
 const assert = require('chai').assert;
 const { createWaitConditionByControlType, WINDOW_SPARGO_JS_TEST } = require('./controlHelper.js');
 
-//ожидаем загрузку данных в грид, пока не появятся строчки
+/**
+ * Ожидаем загрузку данных в грид, пока не появятся строчки 
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} gridPanelId ID грида 
+ */
 async function gridPanelDataExists(page, controlType, gridPanelId) {
     await page.waitForFunction(WINDOW_SPARGO_JS_TEST + 'gridPanelDataExists("' + controlType + '","' + gridPanelId + '")');
 };
 
-//ожидаем завершения Ajax запроса
+/**
+ * Ожидаем завершения Ajax запроса
+ * @param {object} page страница браузера
+ */
 async function waitAjaxRequestComplete(page) {
     const finalResponse = await page.waitForResponse(response => response.status() === 200);
     assert(finalResponse.ok(),"AJAX запрос вернулся с ошибкой.");
 };
 
-//выбор элемента указанного грида по индексу и ожидание его выбора
+/**
+ * Выбор элемента указанного грида по индексу и ожидание его выбора 
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} gridPanelId ID грида 
+ * @param {string} rowNumber номер строки (начинается с 1)
+ */
 async function selectGridPanelElement (page, controlType, gridPanelId, rowNumber) {
     await gridPanelDataExists(page, controlType, gridPanelId);
     await page.evaluate((controlType,gridPanelId, rowNumber) => {
@@ -23,45 +37,81 @@ async function selectGridPanelElement (page, controlType, gridPanelId, rowNumber
     await page.waitForFunction(WINDOW_SPARGO_JS_TEST + 'selectGridPanelElementComplete("' + controlType + '","' + gridPanelId + '",' + rowNumber + ')');
 };
 
-//ищем кнопку тулбара или формы
-async function clickToolbarButton (page, controlType, buttonId, toolbarId) {
-    let button = await getToolbarButton(page, controlType, buttonId, toolbarId);
+/**
+ * Ищем кнопку тулбара или формы и нажимаем на неё
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} buttonId ID кнопки с учетом ID тулбара
+ */
+async function clickToolbarButton (page, controlType, buttonId) {
+    let button = await getToolbarButton(page, controlType, buttonId);
     await buttonClick(button);
 };
 
-//ищем кнопку тулбара или формы
-async function getToolbarButton (page, controlType, buttonId, toolbarId) {
-    let button = await page.evaluateHandle((controlType, buttonId, toolbarId) => {
-        return window.SpargoJs.Test.getButtonDom(controlType, buttonId, toolbarId);
-    }, controlType, buttonId, toolbarId);
+/**
+ * Ищем кнопку тулбара или формы
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} buttonId ID кнопки с учетом ID тулбара
+ */
+async function getToolbarButton (page, controlType, buttonId) {
+    let button = await page.evaluateHandle((controlType, buttonId) => {
+        return window.SpargoJs.Test.getButtonDom(controlType, buttonId);
+    }, controlType, buttonId);
     return button.asElement();
 };
 
-//ожидаем закрытия окна формы редактирования
+/**
+ * Ожидаем закрытия окна формы редактирования
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} windowId ID окна, которое должны быть закрыто
+ */
 async function waitWindowClose(page, controlType, windowId) {
     await page.waitForFunction(WINDOW_SPARGO_JS_TEST + "checkWindowClose('" + controlType + "','" + windowId + "') == true");
 };
 
-//ожидаем закрытия окна формы редактирования
+/**
+ * Ожидаем, что указанное окно станет активным
+ * @param {object} page страница браузера
+ * @param {string} controlType тип контрола формы редактирования
+ * @param {string} windowId ID окна, которое должны быть закрыто
+ */
 async function waitWindowActive(page, controlType, windowId) {
     await page.waitForFunction(WINDOW_SPARGO_JS_TEST + "checkWindowActive('" + controlType + "','" + windowId + "') == true");
 };
 
-//нажатие кнопки
+/**
+ * Нажатие кнопки
+ * @param {object} button объект кнопки
+ */
 async function buttonClick (button) {
     await button.click();
 };
 
-//ожидаем загрузки контрола указанного типа
+/**
+ * Ожидаем загрузки контрола указанного типа
+ * @param {object} page страница браузера
+ * @param {string} waitControlType тип контрола, который должен быть загружен
+ */
 async function waitByControlTypeLoad(page, waitControlType) {
     await waitByCondition(page, createWaitConditionByControlType(waitControlType));
 };
 
-//ожидание по условию
+/**
+ * Функция ожидания по условию
+ * @param {object} page страница браузера
+ * @param {string} condition JS функция условие
+ */
 async function waitByCondition(page, condition){
     await page.waitForFunction(condition);
 };
 
+/**
+ * Функия формирования ID контрола на тулбаре
+ * @param {string} controlId ID контрола
+ * @param {string} toolbarId ID тулбара
+ */
 function controlToolbarId(controlId, toolbarId) {
     if ((toolbarId) && (toolbarId != '')) controlId = toolbarId + controlId;
     return controlId;

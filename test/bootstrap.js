@@ -10,11 +10,11 @@ const globalVariables = _.pick(global, ['browser', 'expect']);
 
 /* configurable options or object for puppeteer */
 const opts = {
-    headless: false, //headless режим работает только на ИИС. При запуске в студии не работает
-    //slowMo: 100, //замедление действий пользователя
+    headless: false, //headless (без оконный) режим работает только на ИИС. При запуске в студии не работает
+    //slowMo: 100,   //замедление действий пользователя
     timeout: 0,
     args: ['--start-maximized'] 
-    /*разобраться что значат для режима без окна
+    /*разобраться, что значат для режима без окна
     args: [
         '--no-sandbox',
         '--headless',

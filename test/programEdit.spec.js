@@ -15,6 +15,9 @@ const Jour = getJournalDataByCode(ARM_CODE, JOURNAL_CODE);
 const Doc = getDocumentDataByCode(ARM_CODE, DOCUMENT_CODE);
 const JourPT = getJournalDataByCode(ARM_CODE, 'PROGRAM_TYPE');
 
+/**
+ * Массив полей формы - Вариант с поиском полей по коду
+ */
 let fieldArrayAdd = [ 
     new FormField("PROGRAM_CODE","TEST",FIELD_TYPE.TEXT),
     new FormField("PROGRAM_SHORT_NAME","Тест",FIELD_TYPE.TEXT),
@@ -26,13 +29,17 @@ let fieldArrayAdd = [
     new FormField("SOCPROT_ASSIGNMENT_CODE","Льгота",FIELD_TYPE.EXTENDSSTATUSCOMBOBOX),
     new FormField("SOCPROT_IS_MONETIZATION",false,FIELD_TYPE.BOOLEAN)
 ];
-
+/**
+ * Массив полей формы для копирования
+ */
 let fieldArrayCopy = [...fieldArrayAdd]; //используем spread, чтобы не изменять первый массив
 fieldArrayCopy[0] = new FormField("PROGRAM_CODE","TEST_COPY",FIELD_TYPE.TEXT);
 fieldArrayCopy[1] = new FormField("PROGRAM_SHORT_NAME","Тест копия",FIELD_TYPE.TEXT);
 fieldArrayCopy[2] = new FormField("PROGRAM_FULL_NAME","Тест копия Полное название",FIELD_TYPE.TEXT);
 
-//очистка данных после выполнения тестов
+/**
+ * Очистка данных после выполнения тестов 
+ */
 async function ClearData() {
     await executeQuery(`DELETE FROM PROGRAM WHERE program_code like '%TEST%'`);
 };

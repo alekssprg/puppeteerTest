@@ -1,13 +1,18 @@
 const sql = require('mssql');
 const baseSettingsPath = '../testData/baseSettings.json'
 
-//Создание страницы и переход в базовому Url
-module.exports.executeQuery = async function (query) {
+/**
+ * Выполнение SQL запроса
+ * @param {string} query sql запрос
+ */
+async function executeQuery (query) {
     let pool = await getPool();
     await pool.request().query(query);
 };
 
-//открываем соедиение с БД
+/**
+ * Открываем соедиение с БД
+ */
 async function getPool() {
     let dbconnection = require(baseSettingsPath).dbconnection;
     const config = {
@@ -19,3 +24,5 @@ async function getPool() {
     let pool = await sql.connect(config);
     return pool;
 }
+
+module.exports.executeQuery = executeQuery
