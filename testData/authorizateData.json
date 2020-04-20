@@ -6,5 +6,4 @@
     "password" : "1234567",
     "exit": "#buttonLogin",
     "logout": "[class=btn-logout]"
-
 }

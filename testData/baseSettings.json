@@ -7,7 +7,12 @@
     "DRUGSTORE" : "#DRUGSTORE",
     "ADMIN" : "#ADMIN",
     "DIRECTOR" : "#DIRECTOR",
-    
+	"dbconnection" : {
+		"SQLSERVER" : "localhost\\SQLSERVER2016",
+		"username" : "sa",
+        "password" : "1",
+        "dbname" : "efs_murmansk"
+	},
     "DOCTOR_ARM_CODE": "DOCTOR",
     "EXPERT_ARM_CODE": "EXPERT",
     "DRUGSTORE_ARM_CODE": "DRUGSTORE",

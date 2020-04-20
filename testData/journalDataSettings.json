@@ -1,7 +1,13 @@
 {
     "COMMENT": "Данный файл в дальнейшем нужно генерировать автоматически на основании данных в БД.",
     "DOCTOR": {
-        "PROGRAM" : { "Url" : "~\\PatientPresentation\\Programs.ascx" , "Title": "Справочник программ ЛЛО", "WaitCondition": "(window.SpargoJs.Test.getLastControlId('Programs') != null)"},
-        "DOCTOR_RECIPE" : { "Url" : "~\\RecipePresentation\\DoctorRecipes.ascx" , "Title": "Журнал рецептов. Выписка", "WaitCondition": "(window.SpargoJs.Test.getLastControlId('DoctorRecipes') != null)"}
+        "PROGRAM" : { "Url" : "~\\PatientPresentation\\Programs.ascx" , "Title": "Справочник программ ЛЛО", "ControlType": "Programs", "GridPanelId" : "masterGrid",
+                        "gridDoubleClickHandler":"window.SpargoJs.ProgramPresentation.gridDoubleClick" },
+        "DOCTOR_RECIPE" : { "Url" : "~\\RecipePresentation\\DoctorRecipes.ascx" , "Title": "Журнал рецептов. Выписка", "ControlType": "DoctorRecipes", "GridPanelId" : "recipesGrid", "ToolbarId": "toolbar1_tool" },
+        "PROGRAM_TYPE" : { "ControlType": "ProgramTypes", "GridPanelId" : "programTypesGrid", "gridDoubleClickHandler" : "window.SpargoJs.PatientPresentation.programTypesGridDoubleClick", "WindowIdType": "Ext" }
+        },
+    "EXPERT": {
+        "OFFER_NUMBER" : { "Url" : "~\\ApplicationCampaignPresentation\\OfferNumbers.ascx" , "Title": "Журнал заявочных кампаний", "ControlType": "OfferNumbers", 
+            "GridPanelId" : "offerNumbersGrid", "ToolbarId" : "toolbar1_tool" }
         }
 }

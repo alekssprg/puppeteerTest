@@ -1,30 +1,33 @@
-const { selectGridPanelElement, waitByCondition, waitWindowClose } = require('./baseListControl.js');
+'use strict'
+const { selectGridPanelElement, waitByControlTypeLoad, waitWindowClose } = require('./baseListControl.js');
 const FIELD_TYPE = { TEXT : "text", SELECT : "select", DATE : "date", BOOLEAN : "boolean",
 NUMBER : "number", EXTENDSSTATUSCOMBOBOX: "extendsstatuscombobox" };
+const { WINDOW_SPARGO_JS_TEST } = require('./controlHelper.js');
+const MB_BUTTON_CODE = {OK: "ok", YES: "yes", NO: "no", CANCEL: "cancel"};
 
 class FormField {
-    constructor (name, value, type, selectControlType, selectGridPanelId, waitOpenFormCondition, selectWindowId){
+    constructor (name, value, type, selectControlType, selectGridPanelId, selectWindowId, doubleClickHandler){
        //поля будут публичные
        this.name = name;
        this.value = value;
        this.type = type;
        this.selectControlType = selectControlType;
        this.selectGridPanelId = selectGridPanelId;
-       this.waitOpenFormCondition = waitOpenFormCondition;
        this.selectWindowId = selectWindowId;
+       this.doubleClickHandler = doubleClickHandler;
     }
 }
 
 //ожидание заполнения поля формы не пустым значением
 async function checkFieldValueValid (page, controlType, formId, fieldName) {
-    await page.waitForFunction('window.SpargoJs.Test.formFieldValueValid("' + controlType + '","' + formId + '","' + fieldName + '")');
+    await page.waitForFunction(WINDOW_SPARGO_JS_TEST + 'formFieldValueValid("' + controlType + '","' + formId + '","' + fieldName + '")');
 };
 
 //заполнение полей формы редактирования
 async function fillProgramEditForm(page, controlType, formId, fieldArray) {
     for(let i = 0; i < fieldArray.length; i++){
         let field = fieldArray[i];
-        if ((field.type == FIELD_TYPE.TEXT)||(field.type == FIELD_TYPE.DATE)) {
+        if ((field.type == FIELD_TYPE.TEXT)||(field.type == FIELD_TYPE.DATE)||(field.type == FIELD_TYPE.NUMBER)) {
             //сделать цикл по полям
             await fillTextField(page, controlType, formId, field);
         } else if (field.type == FIELD_TYPE.SELECT) {
@@ -42,15 +45,12 @@ async function fillTextField(page, controlType, formId, field) {
     let fieldElement = await getElementByName(page, controlType, formId, field.name);
     await textFieldClearValueIfNotEmpty(page, controlType, formId, field.name);
     await fieldElement.type(field.value);
-    //await fieldElement.focus({delay: 50});//type(field.value);
-    //await page.keyboard.type(field.value /*, { delay: 50 }*/);
     await checkFieldValueValid(page, controlType, formId, field.name);
 };
 
 //функция получения элемента формы по ID формы и имени поля
 async function getElementByName(page, controlType, formId, fieldName) {
     let field = await page.evaluateHandle((controlType, formId, fieldName) => {
-        debugger;
         return window.SpargoJs.Test.getFormFieldDom(controlType, formId, fieldName);
     }, controlType, formId, fieldName);
     return field.asElement();
@@ -59,7 +59,6 @@ async function getElementByName(page, controlType, formId, fieldName) {
 //функция очистки текстового поля, если оно не пустое
 async function textFieldClearValueIfNotEmpty(page, controlType, formId, fieldName) {
     await page.evaluateHandle((controlType, formId, fieldName) => {
-        debugger;
         return window.SpargoJs.Test.formTextFieldClearValueIfNotEmpty(controlType, formId, fieldName);
     }, controlType, formId, fieldName);
 };
@@ -70,9 +69,9 @@ async function fillTriggerField(page, controlType, formId, field) {
     await triggerButtonClear.click();
     let triggerButtonOpen = await getTriggerFieldButton(page, controlType, formId, field.name, 0);
     await triggerButtonOpen.click({clickCount:2});
-    await waitByCondition(page, field.waitOpenFormCondition);
+    await waitByControlTypeLoad(page, field.selectControlType);
     await selectGridPanelElement(page, field.selectControlType, field.selectGridPanelId, 1);
-    await gridPanelDoubleClickCall(page, field.selectControlType, field.selectGridPanelId);
+    await gridPanelDoubleClickCall(page, field.selectControlType, field.selectGridPanelId, field.doubleClickHandler);
     await waitWindowClose(page, field.selectControlType, field.selectWindowId);
     await checkFieldValueValid(page, controlType, formId, field.name);
 };
@@ -80,18 +79,18 @@ async function fillTriggerField(page, controlType, formId, field) {
 //функция получения кнопки TriggerField-а (по умолчанию юерем первую кнопку - открыть справочник)
 async function getTriggerFieldButton(page, controlType, formId, triggerFieldName, buttonIndex = 0) {
     let field = await page.evaluateHandle((controlType, formId, fieldName, buttonIndex) => {
-        debugger;
         return window.SpargoJs.Test.getFormTriggerFieldButtonDom(controlType, formId, fieldName, buttonIndex);
     }, controlType, formId, triggerFieldName, buttonIndex);
     return field.asElement();
 };
 
 //вызов обработчика двойного щелчка у грида
-async function gridPanelDoubleClickCall (page, controlType, gridPanelId) {
-    await page.evaluate((controlType, gridPanelId) => {
+async function gridPanelDoubleClickCall (page, controlType, gridPanelId, doubleClickHandler) {
+    await page.evaluate((controlType, gridPanelId, doubleClickHandler) => {
         var gridPanel = window.SpargoJs.Test.getGridPanel(controlType, gridPanelId);
-        window.SpargoJs.PatientPresentation.programTypesGridDoubleClick(gridPanel);
-    }, controlType, gridPanelId);
+        var fn = eval(doubleClickHandler);
+        fn(gridPanel);
+    }, controlType, gridPanelId, doubleClickHandler);
 };
 
 //заполнение поля комбобокса
@@ -103,22 +102,16 @@ async function fillComboBoxField(page, controlType, formId, field) {
     let listItem = await getComboBoxBoundListItem(page, controlType, formId, field);
     await listItem.click();
     await checkFieldValueValid(page, controlType, formId, field.name);
-    //await checkComboBoxValueValid(page, controlType, formId, field.name, field.value);
 };
-
-/*async function checkComboBoxValueValid(page, controlType, formId, field.name, field.value) {
-    
-};*/
 
 //ждем открытия списка для комбобокса
 async function formComboBoxBoundListIsOpen (page, controlType, formId, fieldName) {
-    await page.waitForFunction('window.SpargoJs.Test.formComboBoxBoundListIsOpen("' + controlType + '","' + formId + '","' + fieldName + '")');
+    await page.waitForFunction(WINDOW_SPARGO_JS_TEST + 'formComboBoxBoundListIsOpen("' + controlType + '","' + formId + '","' + fieldName + '")');
 };
 
 //функция получения элемента из выпадющего списка ComboBox-а
 async function getComboBoxBoundListItem(page, controlType, formId, field) {
     let listItem = await page.evaluateHandle((controlType, formId, fieldName, textValue) => {
-        debugger;
         return window.SpargoJs.Test.getComboBoxBoundListItem(controlType, formId, fieldName, textValue);
     }, controlType, formId, field.name, field.value);
     return listItem.asElement();
@@ -140,11 +133,54 @@ async function fillBooleanField(page, controlType, formId, field) {
 //функция получения значения checkbox-а
 async function getCheckBoxFieldValue(page, controlType, formId, fieldName) {
     return await page.evaluate((controlType, formId, fieldName) => {
-        debugger;
         return window.SpargoJs.Test.getCheckBoxValue(controlType, formId, fieldName);
     }, controlType, formId, fieldName);
 };
 
+//функция ожидания появления MessageBox-а
+//Ждет появления messageBox-а
+//Проверяем текст его сообщения
+//Нажимает указанную кнопку
+async function waitMessageBoxWithText(page, controlType, windowId, waitMessageBoxText, messageBoxButtonCode = MESSAGEBOX_BUTTON_CODE.OK) {
+    await waitMessageBoxActive(page, controlType, windowId);
+    let messageBoxInnerText = await page.evaluate((controlType, windowId) => {
+        return window.SpargoJs.Test.getMessageBoxInnerText(controlType, windowId);
+    }, controlType, windowId);
+    checkMessgaeBoxInnerTextToIncludeNeedString(waitMessageBoxText, messageBoxInnerText);
+    let button = await getMessageBoxButton(page, controlType, windowId, messageBoxButtonCode);
+    await button.click();
+};
+
+//получение кнопки MessageBox-а
+async function getMessageBoxButton(page, controlType, windowId, messageBoxButtonCode) {
+    let button = await page.evaluateHandle((controlType, windowId, messageBoxButtonCode) => {
+        return window.SpargoJs.Test.getMessageBoxButton(controlType, windowId, messageBoxButtonCode);
+    }, controlType, windowId, messageBoxButtonCode);
+    return button.asElement();
+}
+
+//ожидаем появления MessageBox-а
+async function waitMessageBoxActive(page, controlType, windowId){
+    await page.waitForFunction(WINDOW_SPARGO_JS_TEST + "isActiveWindowIsMessageBox('" + controlType + "','" + windowId + "') == true");
+};
+
+//проверяем вхождение строк в сообщение MessageBox-а
+function checkMessgaeBoxInnerTextToIncludeNeedString(waitMessageBoxText, messageBoxInnerText) {
+    let messageBoxInnerTextUC = messageBoxInnerText.toUpperCase();
+    if (waitMessageBoxText instanceof String)
+        waitMessageBoxText = [waitMessageBoxText];
+    let find = true;
+    if (waitMessageBoxText instanceof Array) {
+        for (let i = 0; i < waitMessageBoxText.length; i++) {
+            find = find && messageBoxInnerTextUC.includes(waitMessageBoxText[i].toUpperCase());
+        }
+    }
+    if (!find) throw new Error("MessageBox не содержит нужного сообщения. Ожидаемое сообщение: " + waitMessageBoxText.join(' ') + " Полученное сообщение: " + messageBoxInnerText);
+    return find;
+};
+
 module.exports.FIELD_TYPE = FIELD_TYPE
+module.exports.MB_BUTTON_CODE = MB_BUTTON_CODE
 module.exports.FormField = FormField
 module.exports.fillProgramEditForm = fillProgramEditForm
+module.exports.waitMessageBoxWithText = waitMessageBoxWithText
