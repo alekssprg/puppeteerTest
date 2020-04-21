@@ -1,6 +1,5 @@
 /* Import the puppeteer and expect functionality of chai library for configuraing the Puppeteer */
 const puppeteer = require('puppeteer');
-const { expect } = require('chai');
 const _ = require('lodash');
 const opn = require('opn')
 const cmd = require('node-cmd')
@@ -25,7 +24,6 @@ const opts = {
 
 /* call the before for puppeteer for execute this code before start testing */
 before (async () => {
-  global.expect = expect;
   global.browser = await puppeteer.launch(opts);
 });
 
