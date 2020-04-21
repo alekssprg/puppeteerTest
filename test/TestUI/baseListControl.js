@@ -58,7 +58,7 @@ async function getToolbarButton (page, controlType, buttonId) {
     let button = await page.evaluateHandle((controlType, buttonId) => {
         return window.SpargoJs.Test.getButtonDom(controlType, buttonId);
     }, controlType, buttonId);
-    return button.asElement();
+    return await button.asElement();
 };
 
 /**

@@ -94,7 +94,7 @@ async function getElementByName(page, controlType, formId, fieldName) {
     let field = await page.evaluateHandle((controlType, formId, fieldName) => {
         return window.SpargoJs.Test.getFormFieldDom(controlType, formId, fieldName);
     }, controlType, formId, fieldName);
-    return field.asElement();
+    return await field.asElement();
 };
 
 /**
@@ -141,7 +141,7 @@ async function getTriggerFieldButton(page, controlType, formId, triggerFieldName
     let field = await page.evaluateHandle((controlType, formId, fieldName, buttonIndex) => {
         return window.SpargoJs.Test.getFormTriggerFieldButtonDom(controlType, formId, fieldName, buttonIndex);
     }, controlType, formId, triggerFieldName, buttonIndex);
-    return field.asElement();
+    return await field.asElement();
 };
 
 /**
@@ -198,7 +198,7 @@ async function getComboBoxBoundListItem(page, controlType, formId, field) {
     let listItem = await page.evaluateHandle((controlType, formId, fieldName, textValue) => {
         return window.SpargoJs.Test.getComboBoxBoundListItem(controlType, formId, fieldName, textValue);
     }, controlType, formId, field.name, field.value);
-    return listItem.asElement();
+    return await listItem.asElement();
 };
 
 /**
@@ -266,7 +266,7 @@ async function getMessageBoxButton(page, controlType, windowId, messageBoxButton
     let button = await page.evaluateHandle((controlType, windowId, messageBoxButtonCode) => {
         return window.SpargoJs.Test.getMessageBoxButton(controlType, windowId, messageBoxButtonCode);
     }, controlType, windowId, messageBoxButtonCode);
-    return button.asElement();
+    return await button.asElement();
 }
 
 /**
