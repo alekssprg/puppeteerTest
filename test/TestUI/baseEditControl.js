@@ -127,6 +127,7 @@ async function fillTriggerField(page, controlType, formId, field) {
     await gridPanelDoubleClickCall(page, field.selectControlType, field.selectGridPanelId, field.doubleClickHandler);
     await waitWindowClose(page, field.selectControlType, field.selectWindowId);
     await checkFieldValueValid(page, controlType, formId, field.name);
+    await page.waitFor(100);    //ждем 100 мс для корректного переключения окна - нужно подумать как более точно это определять
 };
 
 /**
