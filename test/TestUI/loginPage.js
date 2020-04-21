@@ -1,5 +1,5 @@
-const authDataPath = '../testData/authorizateData.json'
-const baseSettingsPath = '../testData/baseSettings.json'
+const authDataPath = '../../testData/authorizateData.json'
+const baseSettingsPath = '../../testData/baseSettings.json'
 
 //функция открытия АРМ-а по указанному коду
 async function openApp(page, appCode) {

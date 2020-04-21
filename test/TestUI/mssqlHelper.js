@@ -1,5 +1,5 @@
 const sql = require('mssql');
-const baseSettingsPath = '../testData/baseSettings.json'
+const baseSettingsPath = '../../testData/baseSettings.json'
 
 /**
  * Выполнение SQL запроса

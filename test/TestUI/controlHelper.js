@@ -1,9 +1,9 @@
-const journalDataPath = '../testData/journalDataSettings.json'
+const journalDataPath = '../../testData/journalDataSettings.json'
 /**
  * Мета данные по журналам
  */
 const journalDataAll = require(journalDataPath);
-const documentDataPath = '../testData/documentDataSettings.json'
+const documentDataPath = '../../testData/documentDataSettings.json'
 /**
  * Мета данные по документам
  */

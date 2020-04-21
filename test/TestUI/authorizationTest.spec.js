@@ -4,7 +4,7 @@ const {createPageAndGotoBaseUrl} = require('./startApp.js');
 
 describe('Should login work', async  () => {
     let page;
-    const baseSettingsPath = '../testData/baseSettings.json'
+
     before(async () => { /* before hook for mocha testing */
         page = await createPageAndGotoBaseUrl();
     });

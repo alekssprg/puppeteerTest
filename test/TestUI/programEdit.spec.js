@@ -7,7 +7,7 @@ const { clickToolbarButton, waitByControlTypeLoad, waitWindowClose, selectGridPa
 const { FIELD_TYPE, FormField, fillProgramEditForm } = require('./baseEditControl.js');
 const { executeQuery } = require('./mssqlHelper.js');
 //данные
-const baseSettings = require('../testData/baseSettings.json');
+const baseSettings = require('../../testData/baseSettings.json');
 const ARM_CODE = baseSettings.DOCTOR_ARM_CODE;
 const JOURNAL_CODE = 'PROGRAM';
 const DOCUMENT_CODE = 'PROGRAM';

@@ -5,7 +5,7 @@ const {createPageAndGotoBaseUrl} = require('./startApp.js');
 const {openDocument, openDocumentList, getJournalDataByCode, getDocumentDataByCode} = require('./controlHelper.js');
 const {selectGridPanelElement, clickToolbarButton, waitByControlTypeLoad, gridPanelDataExists, controlToolbarId } = require('./baseListControl.js');
 //данные
-const baseSettings = require('../testData/baseSettings.json');
+const baseSettings = require('../../testData/baseSettings.json');
 const ARM_CODE = baseSettings.DOCTOR_ARM_CODE;
 const JOURNAL_CODE = 'DOCTOR_RECIPE';
 const DOCUMENT_CODE = 'RECIPE';

@@ -1,4 +1,4 @@
-const baseSettingsPath = '../testData/baseSettings.json'
+const baseSettingsPath = '../../testData/baseSettings.json'
 
 //Создание страницы и переход в базовому Url
 /**
