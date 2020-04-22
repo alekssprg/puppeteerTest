@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "editorconfig.editorconfig",
+        "joaompinto.asciidoctor-vscode",
+        "mikestead.dotenv",
+        "gruntfuggly.todo-tree",
+        "shan.code-settings-sync"
+    ]
+}

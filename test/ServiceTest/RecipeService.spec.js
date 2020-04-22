@@ -1,11 +1,12 @@
 const assert = require('chai').assert;
 let soap = require('soap');
+const serviceBaseUrl = require('../../testData/baseSettings').serviceBaseUrl;
 
 describe('LgotaWeb RecipeService', async  () => {
     
     it('LgotaWeb RecipeService method RecipeFind highlevel',(done) => {
         //адрес сервиса
-        var url = 'http://localhost:60003/RecipeService.asmx?wsdl';
+        var url = serviceBaseUrl + 'RecipeService.asmx?wsdl';
         //аргументы
         var args = { clientId:147, seria: "4716", number:"8000012", saleDate:"2016-11-23" };
         soap.createClient(url, function(err, client) {

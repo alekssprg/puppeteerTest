@@ -11,14 +11,16 @@
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
                 //"--grep",
-                //"RecipeService",
+                //"offerNumberEditForm",
                 "--timeout",
                 "0",
                 "${workspaceFolder}/test/bootstrap.js",
                 "--recursive",
                 "${workspaceFolder}/test",
                 "--reporter",
-                "mochawesome"
+                "mochawesome",
+                "--color",
+                "true"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "skipFiles": [

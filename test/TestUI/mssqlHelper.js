@@ -1,11 +1,10 @@
 const sql = require('mssql');
-const baseSettingsPath = '../../testData/baseSettings.json'
 
 /**
  * Выполнение SQL запроса
  * @param {string} query sql запрос
  */
-async function executeQuery (query) {
+async function executeQuery(query) {
     let pool = await getPool();
     await pool.request().query(query);
 };
@@ -14,14 +13,15 @@ async function executeQuery (query) {
  * Открываем соедиение с БД
  */
 async function getPool() {
-    let dbconnection = require(baseSettingsPath).dbconnection;
-    const config = {
+    let dbconnection = require('../../testData/baseSettings').dbconnection;
+
+    let pool = await sql.connect({
         user: dbconnection.username,
         password: dbconnection.password,
         server: dbconnection.SQLSERVER,
         database: dbconnection.dbname,
-    };
-    let pool = await sql.connect(config);
+    });
+
     return pool;
 }
 

@@ -2,14 +2,15 @@ const assert = require('chai').assert;
 const { expect } = require('chai');
 const chai = require('chai')
   , chaiHttp = require('chai-http');
+const serviceBaseUrl = require('../../testData/baseSettings').serviceBaseUrl;
 
 chai.use(chaiHttp);
 
 describe('LgotaWeb RecipeService lowlevel chaiHttp', async  () => {
-    
+
     it('LgotaWeb RecipeService method RecipeFind lowlevel chaiHttp',(done) => {
-       chai.request('localhost:60003')
-                .post('/RecipeService.asmx')
+       chai.request(serviceBaseUrl)
+                .post('RecipeService.asmx')
                 .set('Content-Type', 'text/xml')
                 .set('charset', 'utf-8')
                 .send(`<?xml version="1.0" encoding="utf-8"?>
@@ -34,8 +35,8 @@ describe('LgotaWeb RecipeService lowlevel chaiHttp', async  () => {
      });
 
      it('LgotaWeb RecipeService method RecipeFind lowlevel chaiHttp 2 variant', async () => {
-        let result = await chai.request('localhost:60003')
-                .post('/RecipeService.asmx')
+        let result = await chai.request(serviceBaseUrl)
+                .post('RecipeService.asmx')
                 .set('Content-Type', 'text/xml')
                 .set('charset', 'utf-8')
                 .send(`<?xml version="1.0" encoding="utf-8"?>

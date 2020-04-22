@@ -7,7 +7,7 @@ const { clickToolbarButton, waitByControlTypeLoad, waitWindowClose, waitWindowAc
 const { FIELD_TYPE, MB_BUTTON_CODE, FormField, fillProgramEditForm, waitMessageBoxWithText } = require('./baseEditControl.js');
 const { executeQuery } = require('./mssqlHelper.js');
 //данные
-const baseSettings = require('../../testData/baseSettings.json');
+const baseSettings = require('../../testData/baseSettings');
 const ARM_CODE = baseSettings.EXPERT_ARM_CODE;
 const JOURNAL_CODE = 'OFFER_NUMBER';
 const DOCUMENT_CODE = 'OFFER_NUMBER';

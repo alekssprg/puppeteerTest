@@ -1,36 +1,56 @@
-const authDataPath = '../../testData/authorizateData.json'
-const baseSettingsPath = '../../testData/baseSettings.json'
-
-//функция открытия АРМ-а по указанному коду
+/**
+ * Функция открытия АРМ-а по указанному коду 
+ * @param {object} page страница браузера
+ * @param {string} appCode 
+ */
 async function openApp(page, appCode) {
-    var baseSettings = require(baseSettingsPath);
+    var baseSettings = require('../../testData/baseSettings');
     (await page.$(baseSettings[appCode])).click();
     await page.waitForNavigation({ waitUntil: 'networkidle0' });
 };
-//открыть АРМ-врача
+/**
+ * Открыть АРМ-врача
+ * @param {object} page страница браузера
+ */
 async function openDoctorApp (page) {
     await openApp(page, "DOCTOR");
 };
-//открыть АРМ-фармацевта
+
+/**
+ * Открыть АРМ-фармацевта
+ * @param {object} page страница браузера
+ */
 async function openDrugstoreApp (page) {
-await openApp(page, "DRUGSTORE");
+    await openApp(page, "DRUGSTORE");
 };
-//открыть АРМ-эксперта
+/**
+ * Открыть АРМ-эксперта
+ * @param {object} page страница браузера
+ */
 async function openExpertApp (page) {
-await openApp(page, "EXPERT");
+    await openApp(page, "EXPERT");
 };
-//открыть АРМ-админа
+/**
+ * Открыть АРМ-админа
+ * @param {object} page страница браузера
+ */
 async function openAdminApp (page) {
-await openApp(page, "ADMIN");
+    await openApp(page, "ADMIN");
 };
-//открыть АРМ-директора
+/**
+ * Открыть АРМ-директора
+ * @param {object} page страница браузера
+ */
 async function openDirectorApp(page) {
 await openApp(page, "DIRECTOR");
 };
-
+/**
+ * Авторизация и переход на страницу выбора АРМ-а
+ * @param {object} page страница браузера
+ */
 async function signIn (page) {
-        var authData = require(authDataPath);
-        
+        var authData = require('../../testData/authorizationData');
+
         var exitButton = await page.$(authData.exit);
         var logoutButton = await page.$(authData.logout);
         if (logoutButton)
@@ -50,22 +70,42 @@ async function signIn (page) {
             await page.waitForNavigation({ waitUntil: 'networkidle0' });
         }
     };
+/**
+ * Авторизация и открытие АРМ-врача
+ * @param {object} page страница браузера
+ */
 async function signInAndOpenDoctorApp (page) {
         await signIn(page);
         await openDoctorApp(page);
     };
+/**
+ * Авторизация и открытие АРМ-фармацевта
+ * @param {object} page страница браузера
+ */
 async function signInAndOpenDrugstoreApp(page) {
         await signIn(page);
         await openDrugstoreApp(page);
     };
+/**
+ * Авторизация и открытие АРМ-эксперта
+ * @param {object} page страница браузера
+ */
 async function signInAndOpenExpertApp(page) {
         await signIn(page);
         await openExpertApp(page);
     };
+/**
+ * Авторизация и открытие АРМ-админа
+ * @param {object} page страница браузера
+ */
 async function signInAndOpenAdminApp(page) {
         await signIn(page);
         await openAdminApp(page);
     };
+/**
+ * Авторизация и открытие АРМ-директора
+ * @param {object} page страница браузера
+ */
 async function signInAndOpenDirectorApp(page) {
         await signIn(page);
         await openDirectorApp(page);
